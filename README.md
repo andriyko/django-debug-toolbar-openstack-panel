@@ -29,4 +29,4 @@ An example of panel configuration in ``settings.py``::
                                    'novaclient', 'swiftclient', 'troveclient', ),
         'OPENSTACK_OTHERS_LIST': ('horizon', 'openstack_dashboard', ),
         'TRACE_STACK': True,
-   }
+    }
