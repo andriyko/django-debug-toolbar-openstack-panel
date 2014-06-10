@@ -22,7 +22,7 @@ setup(
     name='django-debug-toolbar-openstack-panel',
     version='0.0.1',
     packages=['openstack_panel', 'openstack_panel.panels'],
-    package_data={'': ['templates/*']},
+    package_data={'openstack_panel': ['templates/*', 'static/*', ]},
     url='https://github.com/andriyko/django-debug-toolbar-openstack-panel',
     license=license,
     author='Andriy Hrytskiv',
