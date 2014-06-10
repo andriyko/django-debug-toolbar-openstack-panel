@@ -1,0 +1,4 @@
+Django==1.6.5
+django-debug-toolbar>=1.0.1
+requests==2.3.0
+six==1.7.2
