@@ -1,0 +1,85 @@
+{% load i18n %}
+{% load static from staticfiles %}
+{% load url from future %}
+
+
+<table style="word-break: break-all !important; margin: 3px">
+    <thead>
+    <tr>
+        <th>{% trans "Function" %}</th>
+        <th>{% trans "Arguments" %}</th>
+        <th>{% trans "Keyword arguments" %}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for k, v in info.items %}
+        <tr style="border-top: 2px solid #000">
+            <td colspan="3">
+                <h4>{% trans "Request" %} #{{ v.req_number }}</h4>
+            </td>
+        </tr>
+        <tr style="padding-bottom:20px; padding-top: 20px;">
+            <td style="width: 15%; padding-right:20px;">
+                <p>{{ v.func }}</p>
+                <p>{% trans "Issued by: " %}<strong>{{ v.client }}</strong></p>
+            </td>
+            <td style="width: 28%; padding-right:20px;">
+                {% for arg in v.args%}
+                    <p>{{ arg }}</p>
+                    <hr />
+                {% endfor %}
+            </td>
+            <td>
+                <ul style="list-style: none;">
+                    {% for k, v in v.kwargs.iteritems %}
+                        <li><strong>{{ k }}</strong>={{ v }}</li>
+                        <hr />
+                    {% endfor %}
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <h4>{% trans "Response" %}</h4>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p>{{ v.response }}</p>
+            </td>
+            <td colspan="2">
+                <p>{{ v.response.json }}</p>
+            </td>
+        </tr>
+        <tr style="padding-top:20px;">
+            <td colspan="3">
+                <a class="stackTrace" style="color:#999; :hover: color:#000; cursor:pointer;">
+                    <span class="toggleArrow" style="color:#999; :hover: color:#000; cursor:pointer;">&#x25B6;</span> {% trans "Stack" %} <span>({{ v.stack|length }} items)</span>
+                </a>
+            </td>
+        </tr>
+
+        <tr class="djTemplateHideContextDiv" style="display:none; padding-bottom: 20px; word-break: break-all !important;">
+            <td colspan="3">
+                <table style="border: none">
+                    <tbody>
+                    {% for item in v.stack %}
+                        <tr style="padding-bottom: 10px;" class="{% cycle 'djDebugOdd' 'djDebugEven' %}">
+                            <td style="width: 28%; padding-right: 5px;">
+                                {{ item.file }}
+                            </td>
+                            <td>
+                                {{ item.function }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+
+<script src="{% static 'debug_toolbar/js/toolbar.openstack.js' %}"></script>
