@@ -180,7 +180,7 @@ class RequestsLogger(object):
 
 
 class OpenstackPanel(Panel):
-    template = 'debug_toolbar/panels/openstack.html'
+    template = 'openstack_panel/openstack.html'
     title = _("OpenStack")
 
     def __init__(self, toolbar):
