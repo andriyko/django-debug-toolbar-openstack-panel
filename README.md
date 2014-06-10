@@ -3,6 +3,11 @@ django-debug-toolbar-openstack-panel
 
 A django-debug-toolbar panel for OpenStack Dashboard
 
+Installation
+============
+
+``pip install git+https://github.com/andriyko/django-debug-toolbar-openstack-panel.git``
+
 Setup
 =====
 Add the following lines to your ``settings.py``:
