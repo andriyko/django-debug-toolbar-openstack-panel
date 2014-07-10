@@ -2,6 +2,7 @@
 {% load static from staticfiles %}
 {% load url from future %}
 
+<h4>{{ total.num }} {% trans "API request" %}{{ total.num|pluralize }} {% trans "took" %} {{ total.time }}</h4>
 
 <table style="word-break: break-all !important; margin: 3px">
     <thead>
@@ -22,6 +23,7 @@
             <td style="width: 15%; padding-right:20px;">
                 <p>{{ v.func }}</p>
                 <p>{% trans "Issued by: " %}<strong>{{ v.client }}</strong></p>
+                <p>{% trans "Time: " %}<strong>{{ v.time_res }}</strong></p>
             </td>
             <td style="width: 28%; padding-right:20px;">
                 {% for arg in v.args%}

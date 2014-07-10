@@ -5,6 +5,7 @@ import inspect
 import functools
 import os
 import six
+import time
 
 from collections import OrderedDict
 
@@ -120,6 +121,7 @@ class RequestsLogger(object):
         self.panel = panel
         self.watcher = watcher
         self.counter = 0
+        self.total_time = 0
 
     def __call__(self, func):
         @functools.wraps(func)
@@ -128,7 +130,12 @@ class RequestsLogger(object):
             client = 'No information available'
             _stack = []
             files = []
+            start = time.time()
             result = func(*args, **kwargs)
+            end = time.time()
+            time_res = end - start
+            time_res_str = "%.2gs" % time_res
+            self.total_time += time_res
 
             try:
                 if self.watcher._trace_stack:
@@ -166,6 +173,7 @@ class RequestsLogger(object):
                     cls_name=cls.__name__,
                     func_name=func.__name__)
                 collected_data = {'req_number': self.counter,
+                                  'time_res': time_res_str,
                                   'func': fname,
                                   'args': args,
                                   'kwargs': kwargs,
@@ -173,6 +181,10 @@ class RequestsLogger(object):
                                   'response': result,
                                   'stack': tuple(_stack)}
                 self.panel.set_request_info(str(self.counter), collected_data)
+                self.panel.set_requests_info_total(
+                    {'time': "%.2gs" % self.total_time,
+                     'num': str(self.counter)}
+                )
             except Exception:
                 pass
             return result
@@ -185,23 +197,31 @@ class OpenstackPanel(Panel):
 
     def __init__(self, toolbar):
         import requests
+        import httplib2
         self.conf = Conf()
-        self._requests_info = OrderedDict()
+        self._requests_info = {}
+        self._requests_info_total = OrderedDict()
         self.orig_request_method = requests.Session.request
+        self.orig_httplib2_request_method = httplib2.Http.request
         super(OpenstackPanel, self).__init__(toolbar)
 
     def enable_instrumentation(self):
         import requests
+        import httplib2
         watcher = ModulesWatcher(clients=self.conf.CLIENTS_LIST,
                                  others=self.conf.OTHERS_LIST,
                                  trace_stack=self.conf.TRACE_STACK)
         requests_logger = RequestsLogger(self, watcher=watcher)
         _request = requests_logger(requests.Session.request)
+        _httplib2_request = requests_logger(requests.Session.request)
         requests.Session.request = _request
+        httplib2.Http.request = _httplib2_request
 
     def disable_instrumentation(self):
         import requests
+        import httplib2
         requests.Session.request = self.orig_request_method
+        httplib2.Http.request = self.orig_httplib2_request_method
 
     @property
     def nav_subtitle(self):
@@ -211,5 +231,9 @@ class OpenstackPanel(Panel):
     def set_request_info(self, k, v):
         self._requests_info[k] = v
 
+    def set_requests_info_total(self, d):
+        self._requests_info_total = d
+
     def process_response(self, request, response):
-        self.record_stats({'info': self._requests_info})
+        self.record_stats({'info': self._requests_info,
+                           'total': self._requests_info_total})
