@@ -10,7 +10,7 @@ Installation
 
 Setup
 =====
-Add the following lines to your ``settings.py``:
+Add to ``settings.py``:
 
     INSTALLED_APPS = (
         ...
@@ -23,9 +23,7 @@ Add the following lines to your ``settings.py``:
         ...
     )
 
-An extra panel titled "OpenStack" should appear in debug toolbar.
-
-An example of panel configuration in ``settings.py``:
+An example of panel configuration:
 
     DEBUG_TOOLBAR_OPENSTACK_PANEL = {
         'OPENSTACK_CLIENTS_LIST': ('ceilometerclient', 'cinderclient',
