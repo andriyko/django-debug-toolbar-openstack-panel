@@ -199,8 +199,8 @@ class OpenstackPanel(Panel):
         import requests
         import httplib2
         self.conf = Conf()
-        self._requests_info = {}
-        self._requests_info_total = OrderedDict()
+        self._requests_info = OrderedDict()
+        self._requests_info_total = {}
         self.orig_request_method = requests.Session.request
         self.orig_httplib2_request_method = httplib2.Http.request
         super(OpenstackPanel, self).__init__(toolbar)
